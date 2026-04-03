@@ -1,0 +1,199 @@
+#include <LiquidCrystal.h>
+
+// -------- LCD PINS --------
+LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
+
+// -------- ULTRASONIC --------
+#define trigFront 2
+#define echoFront 3
+#define trigBack 4
+#define echoBack 5
+
+// -------- IR SENSORS --------
+#define irLeft 6
+#define irRight 7
+
+// -------- MOTOR DRIVER --------
+#define IN1 A0
+#define IN2 A1
+#define IN3 A2
+#define IN4 A3
+#define ENA 5   // PWM
+#define ENB 6   // PWM
+
+// -------- OTHER --------
+#define vacuumPin A4
+#define pumpPin A5
+#define ledFront A6
+#define buttonPin A7
+#define batteryPin A0   // Voltage divider
+
+// -------- VARIABLES --------
+bool robotON = false;
+long duration;
+int distanceFront, distanceBack;
+int speedValue = 150;
+
+// -------- SETUP --------
+void setup() {
+  Serial.begin(9600);
+
+  lcd.begin(16, 2);
+  lcd.print("Cleaning Robot");
+
+  pinMode(trigFront, OUTPUT);
+  pinMode(echoFront, INPUT);
+  pinMode(trigBack, OUTPUT);
+  pinMode(echoBack, INPUT);
+
+  pinMode(irLeft, INPUT);
+  pinMode(irRight, INPUT);
+
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  pinMode(vacuumPin, OUTPUT);
+  pinMode(pumpPin, OUTPUT);
+  pinMode(ledFront, OUTPUT);
+
+  pinMode(buttonPin, INPUT);
+
+  stopRobot();
+}
+
+// -------- DISTANCE FUNCTION --------
+int getDistance(int trig, int echo) {
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+
+  duration = pulseIn(echo, HIGH);
+  return duration * 0.034 / 2;
+}
+
+// -------- MOTOR CONTROL --------
+void setSpeed(int spd) {
+  analogWrite(ENA, spd);
+  analogWrite(ENB, spd);
+}
+
+void moveForward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void moveBackward() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void turnLeft() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void turnRight() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void stopRobot() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+// -------- BATTERY MONITOR --------
+float readBattery() {
+  int val = analogRead(batteryPin);
+  float voltage = val * (5.0 / 1023.0) * 2; // voltage divider
+  return voltage;
+}
+
+// -------- LOOP --------
+void loop() {
+
+  // -------- BUTTON CONTROL --------
+  if (digitalRead(buttonPin) == HIGH) {
+    robotON = !robotON;
+    delay(500); // debounce
+  }
+
+  if (!robotON) {
+    stopRobot();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Robot OFF");
+    return;
+  }
+
+  // -------- READ SENSORS --------
+  distanceFront = getDistance(trigFront, echoFront);
+  distanceBack = getDistance(trigBack, echoBack);
+
+  int leftIR = digitalRead(irLeft);
+  int rightIR = digitalRead(irRight);
+
+  float battery = readBattery();
+
+  // -------- LCD DISPLAY --------
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("F:");
+  lcd.print(distanceFront);
+  lcd.print(" B:");
+  lcd.print(distanceBack);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Bat:");
+  lcd.print(battery);
+
+  // -------- CLEANING SYSTEM --------
+  digitalWrite(vacuumPin, HIGH);
+  digitalWrite(pumpPin, HIGH);
+  digitalWrite(ledFront, HIGH);
+
+  setSpeed(speedValue);
+
+  // -------- NAVIGATION --------
+  if (distanceFront < 20) {
+    stopRobot();
+    delay(200);
+
+    moveBackward();
+    delay(400);
+
+    turnRight();
+    delay(400);
+  }
+  else if (leftIR == LOW) {
+    turnRight();
+    delay(200);
+  }
+  else if (rightIR == LOW) {
+    turnLeft();
+    delay(200);
+  }
+  else {
+    moveForward();
+  }
+
+  delay(100);
+}
