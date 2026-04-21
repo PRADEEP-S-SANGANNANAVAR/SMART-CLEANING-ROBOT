@@ -1,0 +1,36 @@
+Output
+
+The Smart Cleaning Robot produces the following results during operation:
+Effective removal of dust and debris using rotating brushes and vacuum suction
+Successful wet cleaning of stains through water spraying and wiping mechanism
+Proper drying of the floor using the dry wipe system
+Smooth and autonomous navigation with obstacle avoidance
+Continuous monitoring of battery status through LED display
+Reliable and consistent cleaning performance across indoor environments
+
+Demonstration
+The working of the Smart Cleaning Robot can be demonstrated in the following steps:
+Power ON the robot using the ON/OFF button
+The system initializes sensors and components
+Robot begins autonomous movement
+Sensors detect obstacles and adjust direction accordingly
+Cleaning mechanisms activate simultaneously:
+Brushes sweep dust
+Vacuum collects debris
+Water pump sprays water
+Wet wipe cleans surface
+Dry wipe dries the floor
+Robot continues operation until the area is cleaned or battery is low
+
+Testing Scenarios
+Obstacle Test: Robot successfully detects and avoids objects like walls and furniture
+Dry Cleaning Test: Dust and small particles are effectively collected
+Wet Cleaning Test: Stains are removed using water and wiping system
+Navigation Test: Smooth movement in different directions without collision
+Battery Test: System displays accurate battery level
+
+Expected Result
+Clean and dry floor surface
+Reduced human effort
+Time-efficient cleaning process
+Stable and reliable system performance
