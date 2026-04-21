@@ -1,0 +1,55 @@
+Working Module
+
+The Smart Cleaning Robot operates as an autonomous system that integrates sensing, navigation, and cleaning mechanisms. The working process is divided into the following modules:
+
+1. System Initialization
+When powered ON, the Arduino initializes all components including sensors, motors, and display.
+The system checks battery status and prepares for operation.
+
+2. Obstacle Detection Module
+Ultrasonic sensors (front and back) measure distance to obstacles.
+IR sensors (left and right) detect nearby objects and edges.
+The robot continuously monitors surroundings to avoid collisions.
+
+3. Navigation Module
+Based on sensor inputs, the robot decides movement:
+Moves forward when path is clear
+Turns left/right if obstacles are detected
+Moves backward and changes direction if blocked
+Ensures smooth and autonomous navigation.
+
+4. Cleaning Module
+The cleaning system operates simultaneously during movement:
+Rotating brushes sweep dust toward the vacuum inlet
+Vacuum unit collects dust and stores it in the dustbin
+Water pump sprays water for wet cleaning
+Wet wiping mechanism removes stains
+Dry wiping mechanism dries the floor
+
+5. Control Module
+Arduino Uno acts as the central controller
+Motor driver (L298N) controls wheel and brush motors
+Relays/transistors control vacuum and water pump
+
+6. Power Management Module
+Powered by rechargeable batteries
+LED display shows battery level
+Charging port allows easy recharging
+
+7. User Interface Module
+ON/OFF button controls system operation
+LED indicators show robot status
+Front LED light enables operation in low-light conditions
+Working Summary
+Power ON the robot
+Sensors scan environment
+Robot moves autonomously
+Cleaning mechanisms activate
+Obstacles are avoided in real-time
+Cleaning continues until task completion
+
+Output
+Efficient dust removal
+Clean and dry floor surface
+Reduced manual effort
+Reliable and continuous operation
